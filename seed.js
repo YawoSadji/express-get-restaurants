@@ -10,4 +10,6 @@ const syncSeed = async () => {
 
 }
 
-syncSeed()
+syncSeed();
+
+module.exports = syncSeed;
