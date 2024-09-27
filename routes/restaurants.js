@@ -1,6 +1,30 @@
 const express = require('express');
 const router = express.Router();
 const Restaurant = require("../models/index");
+const {check, validationResult} = require('express-validator'); 
+
+
+router.post('/', [
+    
+    check('name').not().isEmpty().trim(),
+    check('location').not().isEmpty().trim(),
+    check('cuisine').not().isEmpty().trim(),
+    // check('name').isLength({min: 1}).trim(),
+    // check('location').isLength({min: 1}).trim(),
+    // check('cuisine').isLength({min: 1}).trim(),
+]
+, async(req,res)=>{
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        res.status(400).json({error: errors.array()});//setting statuscode to 400 
+        //if not it returns a 200 here.
+    } else{
+    await Restaurant.create(req.body);
+    const allRestaurants = await Restaurant.findAll();
+    res.json(allRestaurants);
+    }
+});
+
 
 
 router.get('/', async (req,res)=>{
@@ -14,16 +38,6 @@ router.get('/:id', async(req,res)=>{
     res.json(foundRestaurant);
 });
 
-router.post('/', async(req,res)=>{
-    try{
-    await Restaurant.create(req.body);
-    const allRestaurants = await Restaurant.findAll();
-    res.json(allRestaurants);
-}catch (error){
-    console.error(error);
-    res.status(500).json({message: 'Error creating restaurant'});
-}
-});
 
 router.put('/:id', async(req,res)=>{
     try{

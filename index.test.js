@@ -76,5 +76,37 @@ describe('restaurants tests', ()=>{
         expect(foundRestaurant).toBeNull();
     });
 
+    test('POST returns error when name is empty', async()=>{
+        const response = await request(app).post('/restaurants')
+        .send({
+            name: '',
+            location: 'Texas',
+            cuisine: 'French'
+        });
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toHaveLength(1);
+    });
+
+    test('POST returns error when location is empty', async()=>{
+        const response = await request(app).post('/restaurants')
+        .send({
+            name: 'Le Resto',
+            location: '',
+            cuisine: 'French'
+        });
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toHaveLength(1);
+    });
+
+    test('POST returns error when cuisine is empty', async()=>{
+        const response = await request(app).post('/restaurants')
+        .send({
+            name: 'Le Resto',
+            location: 'Texas',
+            cuisine: ''
+        });
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toHaveLength(1);
+    });
 
 });
